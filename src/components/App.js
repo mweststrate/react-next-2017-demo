@@ -47,11 +47,12 @@ class App extends Component {
                 <Pos top={30} left={1400}>
                     <Emoji.painting size={30} />
                 </Pos>
-                <Pos top={20} left={660}>
+                <Pos top={20} left={540}>
                     <button onClick={bathroom.dump}>Dump</button>
                     <button onClick={bathroom.wipe}>Wipe</button>
                     <button onClick={bathroom.flush}>Flush</button>
-                    <button onClick={this.takeA____}>Take a *</button>
+                    <button onClick={bathroom.restock}>Restock</button>
+                    <button onClick={bathroom.takeA____}>Take a *</button>
                 </Pos>
                 <ToiletPaper amount={bathroom.amountOfToiletPaper} />
                 {bathroom.fullness > 0
@@ -64,13 +65,6 @@ class App extends Component {
                 </Pos>
             </div>
         )
-    }
-
-    takeA____ = () => {
-        const bathroom = this.props.bathroom
-        bathroom.dump()
-        bathroom.wipe()
-        bathroom.wipe()
     }
 }
 
