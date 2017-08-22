@@ -1,10 +1,17 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from "react"
+import ReactDOM from "react-dom"
+import { onSnapshot } from "mobx-state-tree"
 
-import './index.css';
-import App from './components/App';
+import "./index.css"
+import App from "./components/App"
 import { Bathroom } from "./models/Bathroom"
 
-const bathroom = Bathroom.create()
+const initialState = JSON.parse(window.localStorage.getItem("bathroom") || "{}")
 
-ReactDOM.render(<App bathroom={bathroom} />, document.getElementById('root'));
+const bathroom = Bathroom.create(initialState)
+
+onSnapshot(bathroom, snapshot => {
+    window.localStorage.setItem("bathroom", JSON.stringify(snapshot))
+})
+
+ReactDOM.render(<App bathroom={bathroom} />, document.getElementById("root"))
