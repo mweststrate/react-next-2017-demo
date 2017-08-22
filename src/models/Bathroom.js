@@ -1,5 +1,6 @@
-import { types, process } from "mobx-state-tree"
-import { delay, invariant } from "../utils"
+import { types, process, addMiddleware } from "mobx-state-tree"
+
+import { delay, atomicActions } from "../utils"
 
 export const Bathroom = types
     .model("Bathroom", {
@@ -8,7 +9,7 @@ export const Bathroom = types
         isFlushing: false
     })
     .actions(self => {
-        invariant(() => self.fullness <= 2, "ToiletOverflowError")
+        addMiddleware(self, atomicActions)
 
         function wipe() {
             if (self.amountOfToiletPaper <= 0) throw new Error("OutOfToiletPaperException")
@@ -20,6 +21,7 @@ export const Bathroom = types
         }
 
         function dump() {
+            if (self.fullness >= 2) throw new Error("ToiletOverflowException")
             self.fullness += 1
         }
 

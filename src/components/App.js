@@ -40,13 +40,13 @@ class App extends Component {
                 <Pos top={20} left={30}>
                     <Emoji.bathroom size={10} />
                 </Pos>
+                <Pos top={30} left={1400}>
+                    <Emoji.painting size={30} />
+                </Pos>
                 {bathroom.isFlushing &&
                     <Pos top={20} left={200}>
                         <Emoji.flushing size={10} />
                     </Pos>}
-                <Pos top={30} left={1400}>
-                    <Emoji.painting size={30} />
-                </Pos>
                 <Pos top={20} left={540}>
                     <button onClick={bathroom.dump}>Dump</button>
                     <button onClick={bathroom.wipe}>Wipe</button>
