@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 import { observer } from "mobx-react"
+import Draggable from "react-draggable"
 
 import "./App.css"
 
@@ -40,9 +41,14 @@ class App extends Component {
                 <Pos top={20} left={30}>
                     <Emoji.bathroom size={10} />
                 </Pos>
-                <Pos top={30} left={1400}>
-                    <Emoji.painting size={30} />
-                </Pos>
+                <Draggable
+                    defaultPosition={{ x: bathroom.painting.x, y: bathroom.painting.y }}
+                    onStop={(_, { x, y }) => bathroom.movePainting(x, y)}
+                >
+                    <div>
+                        <Emoji.painting size={30} />
+                    </div>
+                </Draggable>
                 {bathroom.isFlushing &&
                     <Pos top={20} left={200}>
                         <Emoji.flushing size={10} />

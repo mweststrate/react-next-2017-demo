@@ -2,11 +2,17 @@ import { types, process, addMiddleware } from "mobx-state-tree"
 
 import { delay, atomicActions } from "../utils"
 
+const Point = types.model({
+    x: types.number,
+    y: types.number
+})
+
 export const Bathroom = types
     .model("Bathroom", {
         amountOfToiletPaper: 3,
         fullness: 0,
-        isFlushing: false
+        isFlushing: false,
+        painting: types.optional(Point, { x: 1400, y: 30 })
     })
     .actions(self => {
         addMiddleware(self, atomicActions)
@@ -45,6 +51,10 @@ export const Bathroom = types
             dump,
             flush,
             restock,
-            takeA____
+            takeA____,
+            movePainting(x, y) {
+                self.painting.x = x
+                self.painting.y = y
+            }
         }
     })
