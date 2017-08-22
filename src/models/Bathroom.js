@@ -4,7 +4,7 @@ import { delay } from "../utils"
 
 export const Bathroom = types
     .model("Bathroom", {
-        amountOfToiletPaper: 5,
+        amountOfToiletPaper: 3,
         fullness: 0,
         isFlushing: false
     })
@@ -13,7 +13,7 @@ export const Bathroom = types
             if (self.isFlushing) return
             self.isFlushing = true
             yield delay(2000)
-            self.fullness = Math.max(0, self.fullness - 1)
+            self.fullness = 0
             self.isFlushing = false
         })
 

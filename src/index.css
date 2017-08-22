@@ -5,13 +5,14 @@ body {
 }
 
 button {
-  font-size: 3em;
+  font-size: 2em;
   border-radius: 10px;
   border: 4px white;
   background: black;
   padding: 20px;
   color: white;
   margin-right: 10px;
+  cursor: pointer;
 }
 
 button:hover {

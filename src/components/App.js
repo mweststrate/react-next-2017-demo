@@ -51,6 +51,7 @@ class App extends Component {
                     <button onClick={bathroom.dump}>Dump</button>
                     <button onClick={bathroom.wipe}>Wipe</button>
                     <button onClick={bathroom.flush}>Flush</button>
+                    <button onClick={this.takeA____}>Take a *</button>
                 </Pos>
                 <ToiletPaper amount={bathroom.amountOfToiletPaper} />
                 {bathroom.fullness > 0
@@ -63,6 +64,13 @@ class App extends Component {
                 </Pos>
             </div>
         )
+    }
+
+    takeA____ = () => {
+        const bathroom = this.props.bathroom
+        bathroom.dump()
+        bathroom.wipe()
+        bathroom.wipe()
     }
 }
 
