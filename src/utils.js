@@ -1,4 +1,4 @@
-import { getSnapshot, applySnapshot } from "mobx-state-tree"
+import { getSnapshot, applySnapshot, onAction, applyAction } from "mobx-state-tree"
 
 export function atomicActions(call, next) {
     // we are only interested in "root" actions
@@ -13,6 +13,17 @@ export function atomicActions(call, next) {
         // ..and rethrow
         throw e
     }
+}
+
+export function synchronizeActions(stores, actionNames) {
+    stores.forEach(source => {
+        onAction(source, action => {
+            if (actionNames.includes(action.name))
+                stores.forEach(target => {
+                    if (target !== source) applyAction(target, action)
+                })
+        })
+    })
 }
 
 export function delay(time) {

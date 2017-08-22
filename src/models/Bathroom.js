@@ -17,7 +17,7 @@ export const Bathroom = types
         }
 
         function restock() {
-            self.amountOfToiletPaper += 5
+            self.amountOfToiletPaper += 3
         }
 
         function dump() {
