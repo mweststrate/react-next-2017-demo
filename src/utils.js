@@ -1,4 +1,11 @@
-import { getSnapshot, applySnapshot, onAction, applyAction } from "mobx-state-tree"
+import {
+    getSnapshot,
+    applySnapshot,
+    onAction,
+    applyAction,
+    addMiddleware,
+    recordPatches
+} from "mobx-state-tree"
 
 export function atomicActions(call, next) {
     // we are only interested in "root" actions
@@ -30,4 +37,38 @@ export function delay(time) {
     return new Promise(resolve => {
         setTimeout(resolve, time)
     })
+}
+
+export function undoRedoMiddleware(store, actionNames) {
+    let idx = -1
+    const undoStack = []
+
+    addMiddleware(store, (call, next) => {
+        if (actionNames.includes(call.name)) {
+            const recorder = recordPatches(store)
+            const res = next(call)
+            recorder.stop()
+            idx++
+            undoStack.splice(idx)
+            undoStack.push(recorder)
+            return res
+        } else {
+            return next(call)
+        }
+    })
+
+    return {
+        undo() {
+            if (idx >= 0) {
+                undoStack[idx].undo()
+                idx--
+            }
+        },
+        redo() {
+            if (idx < undoStack.length - 1) {
+                idx++
+                undoStack[idx].replay()
+            }
+        }
+    }
 }

@@ -1,6 +1,7 @@
+import { autorun } from "mobx"
 import { types, process, addMiddleware } from "mobx-state-tree"
 
-import { delay, atomicActions } from "../utils"
+import { delay, atomicActions, undoRedoMiddleware } from "../utils"
 
 const Point = types.model({
     x: types.number,
@@ -15,7 +16,12 @@ export const Bathroom = types
         painting: types.optional(Point, { x: 1400, y: 30 })
     })
     .actions(self => {
-        addMiddleware(self, atomicActions)
+        // addMiddleware(self, atomicActions)
+        const undoManager = undoRedoMiddleware(self, ["movePainting"])
+
+        autorun(() => {
+            console.dir(self.painting.toJSON())
+        })
 
         function wipe() {
             if (self.amountOfToiletPaper <= 0) throw new Error("OutOfToiletPaperException")
@@ -53,8 +59,9 @@ export const Bathroom = types
             restock,
             takeA____,
             movePainting(x, y) {
-                self.painting.x = x
-                self.painting.y = y
-            }
+                self.painting = { x, y }
+            },
+            undo: undoManager.undo,
+            redo: undoManager.redo
         }
     })

@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React from "react"
 import { observer } from "mobx-react"
 import Draggable from "react-draggable"
 
@@ -33,46 +33,43 @@ const Emoji = {
     goal: createEmojiComponent("🎯")
 }
 
-class App extends Component {
-    render() {
-        const bathroom = this.props.bathroom
-        return (
-            <div className="App">
-                <Pos top={20} left={30}>
-                    <Emoji.bathroom size={10} />
-                </Pos>
-                <Draggable
-                    defaultPosition={{ x: bathroom.painting.x, y: bathroom.painting.y }}
-                    onStop={(_, { x, y }) => bathroom.movePainting(x, y)}
-                >
-                    <div>
-                        <Emoji.painting size={30} />
-                    </div>
-                </Draggable>
-                {bathroom.isFlushing &&
-                    <Pos top={20} left={200}>
-                        <Emoji.flushing size={10} />
-                    </Pos>}
-                <Pos top={20} left={540}>
-                    <button onClick={bathroom.dump}>Dump</button>
-                    <button onClick={bathroom.wipe}>Wipe</button>
-                    <button onClick={bathroom.flush}>Flush</button>
-                    <button onClick={bathroom.restock}>Restock</button>
-                    <button onClick={bathroom.takeA____}>Take a *</button>
-                </Pos>
-                <ToiletPaper amount={bathroom.amountOfToiletPaper} />
-                {bathroom.fullness > 0
-                    ? <Poop amount={bathroom.fullness} />
-                    : <Pos top={540} left={783}>
-                          <Emoji.duck size={18} />
-                      </Pos>}
-                <Pos top={480} left={700}>
-                    <Emoji.toilet size={35} />
-                </Pos>
+export default observer(({ bathroom }) =>
+    <div className="App">
+        <Pos top={20} left={30}>
+            <Emoji.bathroom size={10} />
+        </Pos>
+        <Draggable
+            position={{ x: bathroom.painting.x, y: bathroom.painting.y }}
+            onStop={(_, { x, y }) => bathroom.movePainting(x, y)}
+        >
+            <div>
+                <Emoji.painting size={30} />
             </div>
-        )
-    }
-}
+        </Draggable>
+        {bathroom.isFlushing &&
+            <Pos top={20} left={200}>
+                <Emoji.flushing size={10} />
+            </Pos>}
+        <Pos top={20} left={540}>
+            <button onClick={bathroom.dump}>Commit</button>
+            <button onClick={bathroom.wipe}>Wipe</button>
+            <button onClick={bathroom.flush}>Flush</button>
+            <button onClick={bathroom.restock}>Restock</button>
+            <button onClick={bathroom.takeA____}>Take a *</button>
+            <button onClick={bathroom.undo}>undo</button>
+            <button onClick={bathroom.redo}>redo</button>
+        </Pos>
+        <ToiletPaper amount={bathroom.amountOfToiletPaper} />
+        {bathroom.fullness > 0
+            ? <Poop amount={bathroom.fullness} />
+            : <Pos top={540} left={783}>
+                  <Emoji.duck size={18} />
+              </Pos>}
+        <Pos top={480} left={700}>
+            <Emoji.toilet size={35} />
+        </Pos>
+    </div>
+)
 
 const ToiletPaper = ({ amount }) =>
     <Stack amount={amount}>
@@ -99,5 +96,3 @@ const Stack = ({ amount, children }) => {
         </div>
     )
 }
-
-export default observer(App)
