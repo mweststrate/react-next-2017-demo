@@ -7,9 +7,7 @@ import {
     recordPatches
 } from "mobx-state-tree"
 
-export function atomicActions(call, next) {
-    // we are only interested in "root" actions
-    if (call.id !== call.rootId) return next(call)
+export function atomic(call, next) {
     // record a preState
     const preState = getSnapshot(call.context)
     try {
