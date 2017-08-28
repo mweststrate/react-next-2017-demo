@@ -52,9 +52,9 @@ const Painting = observer(({ painting }) =>
 
 const Buttons = ({ bathroom }) =>
     <Pos top={20} left={540}>
-        <button onClick={bathroom.dump}>Donate</button>
+        <button onClick={bathroom.toilet.donate}>Donate</button>
         <button onClick={bathroom.wipe}>Wipe</button>
-        <button onClick={bathroom.flush}>Flush</button>
+        <button onClick={bathroom.toilet.flush}>Flush</button>
         <button onClick={bathroom.restock}>Restock</button>
         <button onClick={bathroom.takeA____}>Take a *</button>
         <button onClick={bathroom.undo}>undo</button>
@@ -68,24 +68,25 @@ const FlushingIcon = ({ visible }) =>
           </Pos>
         : null
 
-const Toilet = observer(({ bathroom }) =>
+const Toilet = observer(({ toilet }) =>
     <div>
-        {bathroom.fullness > 0
-            ? <Stack amount={bathroom.fullness}>
-                  {i =>
-                      <Pos top={542 - i * 150} left={780} key={i}>
-                          <Emoji.poop size={20} className={bathroom.isFlushing ? "spinning" : ""} />
-                      </Pos>}
-              </Stack>
-            : <Pos top={540} left={783}>
-                  <Emoji.duck size={18} className={bathroom.isFlushing ? "spinning" : "wobble"} />
-              </Pos>}
+        {toilet.contents.map((item, i) =>
+            <Pos top={542 - i * 150} left={780} key={i}>
+                {item.type === "duck"
+                    ? <Duck flushing={toilet.isFlushing} />
+                    : <Sh_t flushing={toilet.isFlushing} />}
+            </Pos>
+        )}
         <Pos top={480} left={700}>
             <Emoji.toilet size={35} />
         </Pos>
         }
     </div>
 )
+
+const Sh_t = ({ flushing }) => <Emoji.poop size={20} className={flushing ? "spinning" : ""} />
+
+const Duck = ({ flushing }) => <Emoji.duck size={18} className={flushing ? "spinning" : "wobble"} />
 
 const BathroomIcon = () =>
     <Pos top={20} left={30}>
@@ -95,11 +96,11 @@ const BathroomIcon = () =>
 const Bathroom = ({ bathroom }) =>
     <div className="Bathroom">
         <BathroomIcon />
-        <FlushingIcon visible={bathroom.isFlushing} />
+        <FlushingIcon visible={bathroom.toilet.isFlushing} />
         <Painting painting={bathroom.painting} />
         <Buttons bathroom={bathroom} />
         <ToiletPaper bathroom={bathroom} />
-        <Toilet bathroom={bathroom} />
+        <Toilet toilet={bathroom.toilet} />
     </div>
 
 export default observer(Bathroom)

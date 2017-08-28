@@ -3,19 +3,44 @@ import { types, process, addMiddleware } from "mobx-state-tree"
 
 import { delay, atomicActions, undoRedoMiddleware } from "../utils"
 
-const Anchor = types.model({
-    x: types.number,
-    y: types.number
-})
-
 const Sh_t = types.model({
+    type: types.literal("sh_t"),
     weight: 500,
     smell: 7
 })
 
-const Toilet = types.model({
-    contents: types.array(Sh_t)
+const Duck = types.model({
+    type: types.literal("duck"),
+    name: "Donald"
 })
+
+const Toilet = types
+    .model({
+        isFlushing: false,
+        contents: types.array(types.union(Sh_t, Duck))
+    })
+    .actions(self => {
+        function donate() {
+            if (self.contents.length >= 2) throw new Error("ToiletOverflowException")
+            if (Duck.is(self.contents[0])) self.contents.clear()
+            self.contents.push(Sh_t.create({ type: "sh_t" }))
+        }
+
+        const flush = process(function* flush() {
+            if (self.isFlushing) return
+            self.isFlushing = true
+            yield delay(2000)
+            self.contents = [Duck.create({ type: "duck" })]
+            self.isFlushing = false
+        })
+
+        return {
+            donate,
+            flush
+        }
+    })
+
+const Anchor = types.model({ x: types.number, y: types.number })
 
 const Painting = types
     .model({
@@ -32,21 +57,11 @@ export const Bathroom = types
     .model("Bathroom", {
         amountOfToiletPaper: 0,
         toilet: Toilet,
-        painting: Painting,
-        isFlushing: false
+        painting: Painting
     })
-    .views(self => ({
-        get fullness() {
-            return self.toilet.contents.length
-        }
-    }))
     .actions(self => {
         // addMiddleware(self, atomicActions)
-        const undoManager = undoRedoMiddleware(self, ["movePainting"])
-
-        autorun(() => {
-            console.dir(self.painting.toJSON())
-        })
+        const undoManager = undoRedoMiddleware(self, ["move"])
 
         function wipe() {
             if (self.amountOfToiletPaper <= 0) throw new Error("OutOfToiletPaperException")
@@ -57,30 +72,15 @@ export const Bathroom = types
             self.amountOfToiletPaper += 3
         }
 
-        function dump() {
-            if (self.fullness >= 2) throw new Error("ToiletOverflowException")
-            self.toilet.contents.push(Sh_t.create())
-        }
-
-        const flush = process(function* flush() {
-            if (self.isFlushing) return
-            self.isFlushing = true
-            yield delay(2000)
-            self.toilet.contents.clear()
-            self.isFlushing = false
-        })
-
         function takeA____() {
-            self.dump()
+            self.toilet.donate()
             self.wipe()
             self.wipe()
-            self.flush()
+            self.toilet.flush()
         }
 
         return {
             wipe,
-            dump,
-            flush,
             restock,
             takeA____,
             undo: undoManager.undo,
