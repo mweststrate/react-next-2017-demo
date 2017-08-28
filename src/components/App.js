@@ -4,15 +4,17 @@ import Draggable from "react-draggable"
 
 import "./App.css"
 
+const EmojiSpan = ({ emoji, size, className }) =>
+    <span
+        role="img"
+        style={{ fontSize: (size || 10) + "em", display: "block" }}
+        className={className}
+    >
+        {emoji}
+    </span>
+
 function createEmojiComponent(emoji) {
-    return ({ size, className }) =>
-        <span
-            role="img"
-            style={{ fontSize: (size || 10) + "em", display: "block" }}
-            className={className}
-        >
-            {emoji}
-        </span>
+    return props => <EmojiSpan emoji={emoji} {...props} />
 }
 
 const Pos = ({ top, left, children }) =>
@@ -37,13 +39,13 @@ const Emoji = {
     goal: createEmojiComponent("🎯")
 }
 
-const Painting = observer(({ bathroom }) =>
+const Painting = observer(({ painting }) =>
     <Draggable
-        position={{ x: bathroom.painting.x, y: bathroom.painting.y }}
-        onStop={(_, { x, y }) => bathroom.movePainting(x, y)}
+        position={{ x: painting.anchor.x, y: painting.anchor.y }}
+        onStop={(_, { x, y }) => painting.move(x, y)}
     >
         <div>
-            <Emoji.painting size={30} />
+            <EmojiSpan size={30} emoji={painting.painting} />
         </div>
     </Draggable>
 )
@@ -59,8 +61,8 @@ const Buttons = ({ bathroom }) =>
         <button onClick={bathroom.redo}>redo</button>
     </Pos>
 
-const FlushingIcon = ({ bathroom }) =>
-    bathroom.isFlushing
+const FlushingIcon = ({ visible }) =>
+    visible
         ? <Pos top={20} left={200}>
               <Emoji.flushing size={10} />
           </Pos>
@@ -69,9 +71,14 @@ const FlushingIcon = ({ bathroom }) =>
 const Toilet = observer(({ bathroom }) =>
     <div>
         {bathroom.fullness > 0
-            ? <Poop amount={bathroom.fullness} flushing={bathroom.isFlushing} />
+            ? <Stack amount={bathroom.fullness}>
+                  {i =>
+                      <Pos top={542 - i * 150} left={780} key={i}>
+                          <Emoji.poop size={20} className={bathroom.isFlushing ? "spinning" : ""} />
+                      </Pos>}
+              </Stack>
             : <Pos top={540} left={783}>
-                  <Emoji.duck size={18} className="wobble" />
+                  <Emoji.duck size={18} className={bathroom.isFlushing ? "spinning" : "wobble"} />
               </Pos>}
         <Pos top={480} left={700}>
             <Emoji.toilet size={35} />
@@ -88,8 +95,8 @@ const BathroomIcon = () =>
 const Bathroom = ({ bathroom }) =>
     <div className="Bathroom">
         <BathroomIcon />
-        <FlushingIcon bathroom={bathroom} />
-        <Painting bathroom={bathroom} />
+        <FlushingIcon visible={bathroom.isFlushing} />
+        <Painting painting={bathroom.painting} />
         <Buttons bathroom={bathroom} />
         <ToiletPaper bathroom={bathroom} />
         <Toilet bathroom={bathroom} />
@@ -106,15 +113,7 @@ const ToiletPaper = observer(({ bathroom }) =>
     </Stack>
 )
 
-const Poop = ({ amount, flushing }) =>
-    <Stack amount={amount}>
-        {i =>
-            <Pos top={542 - i * 150} left={780} key={i}>
-                <Emoji.poop size={20} className={flushing ? "spinning" : ""} />
-            </Pos>}
-    </Stack>
-
-const Stack = ({ amount, children }) => {
+const Stack = observer(({ amount, children }) => {
     const items = []
     for (let i = 0; i < amount; i++) items.push(children(i))
     return (
@@ -122,4 +121,4 @@ const Stack = ({ amount, children }) => {
             {items}
         </div>
     )
-}
+})

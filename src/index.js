@@ -8,7 +8,15 @@ import Bathroom from "./components/App"
 import { Bathroom as BathroomModel } from "./models/Bathroom"
 import { synchronizeActions } from "./utils"
 
-const initialState = JSON.parse(window.localStorage.getItem("bathroom") || "{}")
+const emptyBathroom = {
+    toilet: { contents: [] },
+    painting: {}
+}
+
+const initialState = window.localStorage.getItem("bathroom")
+    ? JSON.parse(window.localStorage.getItem("bathroom"))
+    : emptyBathroom
+
 const bathroom = BathroomModel.create(initialState)
 
 onSnapshot(bathroom, snapshot => {

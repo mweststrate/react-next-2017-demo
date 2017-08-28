@@ -31,7 +31,7 @@ button:hover {
 
 .spinning
 {
-animation: rotating 1s linear infinite;
+animation: rotating 0.5s linear infinite;
 }
 
 .wobble
