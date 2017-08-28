@@ -1,7 +1,7 @@
 import { autorun } from "mobx"
 import { types, process, addMiddleware, destroy, decorate } from "mobx-state-tree"
 
-import { delay, atomic, undoRedoMiddleware } from "../utils"
+import { delay, atomic, atomicAsync, undoRedoMiddleware, atomicAsync2 } from "../utils"
 
 const Sh_t = types.model({
     type: types.literal("sh_t"),
@@ -72,18 +72,20 @@ export const Bathroom = types
             self.amountOfToiletPaper += 3
         }
 
-        function takeA____() {
+        const takeA____ = process(function*() {
             self.toilet.donate()
             self.wipe()
             self.wipe()
-            self.toilet.flush()
-        }
+            yield self.toilet.flush()
+            self.wipe()
+            self.wipe()
+        })
 
         return {
             wipe,
             restock,
             // takeA____
-            takeA____: decorate(atomic, takeA____)
+            takeA____: decorate(atomicAsync2, takeA____)
             // undo: undoManager.undo,
             // redo: undoManager.redo
         }

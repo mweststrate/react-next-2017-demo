@@ -13,9 +13,10 @@ const emptyBathroom = {
     painting: {}
 }
 
-const initialState = window.localStorage.getItem("bathroom")
-    ? JSON.parse(window.localStorage.getItem("bathroom"))
-    : emptyBathroom
+const initialState =
+    window.localStorage.getItem("bathroom") || false
+        ? JSON.parse(window.localStorage.getItem("bathroom"))
+        : emptyBathroom
 
 const bathroom = BathroomModel.create(initialState)
 
