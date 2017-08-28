@@ -1,3 +1,13 @@
+@keyframes rotating {
+from { transform: rotate(0deg); }
+to { transform: rotate(360deg); }
+}
+
+@keyframes wobble{
+from  {  transform: rotate(-10deg);  }
+to  {  transform: rotate(10deg);  }
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -17,4 +27,14 @@ button {
 
 button:hover {
     border-color: cyan;
+}
+
+.spinning
+{
+animation: rotating 1s linear infinite;
+}
+
+.wobble
+{
+animation: wobble 3s linear 0s infinite alternate;
 }

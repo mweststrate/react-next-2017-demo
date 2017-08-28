@@ -5,8 +5,12 @@ import Draggable from "react-draggable"
 import "./App.css"
 
 function createEmojiComponent(emoji) {
-    return ({ size }) =>
-        <span role="img" style={{ fontSize: (size || 10) + "em" }}>
+    return ({ size, className }) =>
+        <span
+            role="img"
+            style={{ fontSize: (size || 10) + "em", display: "block" }}
+            className={className}
+        >
             {emoji}
         </span>
 }
@@ -33,57 +37,80 @@ const Emoji = {
     goal: createEmojiComponent("🎯")
 }
 
-export default observer(({ bathroom }) =>
-    <div className="App">
-        <Pos top={20} left={30}>
-            <Emoji.bathroom size={10} />
-        </Pos>
-        <Draggable
-            position={{ x: bathroom.painting.x, y: bathroom.painting.y }}
-            onStop={(_, { x, y }) => bathroom.movePainting(x, y)}
-        >
-            <div>
-                <Emoji.painting size={30} />
-            </div>
-        </Draggable>
-        {bathroom.isFlushing &&
-            <Pos top={20} left={200}>
-                <Emoji.flushing size={10} />
-            </Pos>}
-        <Pos top={20} left={540}>
-            <button onClick={bathroom.dump}>Commit</button>
-            <button onClick={bathroom.wipe}>Wipe</button>
-            <button onClick={bathroom.flush}>Flush</button>
-            <button onClick={bathroom.restock}>Restock</button>
-            <button onClick={bathroom.takeA____}>Take a *</button>
-            <button onClick={bathroom.undo}>undo</button>
-            <button onClick={bathroom.redo}>redo</button>
-        </Pos>
-        <ToiletPaper amount={bathroom.amountOfToiletPaper} />
+const Painting = observer(({ bathroom }) =>
+    <Draggable
+        position={{ x: bathroom.painting.x, y: bathroom.painting.y }}
+        onStop={(_, { x, y }) => bathroom.movePainting(x, y)}
+    >
+        <div>
+            <Emoji.painting size={30} />
+        </div>
+    </Draggable>
+)
+
+const Buttons = ({ bathroom }) =>
+    <Pos top={20} left={540}>
+        <button onClick={bathroom.dump}>Donate</button>
+        <button onClick={bathroom.wipe}>Wipe</button>
+        <button onClick={bathroom.flush}>Flush</button>
+        <button onClick={bathroom.restock}>Restock</button>
+        <button onClick={bathroom.takeA____}>Take a *</button>
+        <button onClick={bathroom.undo}>undo</button>
+        <button onClick={bathroom.redo}>redo</button>
+    </Pos>
+
+const FlushingIcon = ({ bathroom }) =>
+    bathroom.isFlushing
+        ? <Pos top={20} left={200}>
+              <Emoji.flushing size={10} />
+          </Pos>
+        : null
+
+const Toilet = observer(({ bathroom }) =>
+    <div>
         {bathroom.fullness > 0
-            ? <Poop amount={bathroom.fullness} />
+            ? <Poop amount={bathroom.fullness} flushing={bathroom.isFlushing} />
             : <Pos top={540} left={783}>
-                  <Emoji.duck size={18} />
+                  <Emoji.duck size={18} className="wobble" />
               </Pos>}
         <Pos top={480} left={700}>
             <Emoji.toilet size={35} />
         </Pos>
+        }
     </div>
 )
 
-const ToiletPaper = ({ amount }) =>
-    <Stack amount={amount}>
+const BathroomIcon = () =>
+    <Pos top={20} left={30}>
+        <Emoji.bathroom size={10} />
+    </Pos>
+
+const Bathroom = ({ bathroom }) =>
+    <div className="Bathroom">
+        <BathroomIcon />
+        <FlushingIcon bathroom={bathroom} />
+        <Painting bathroom={bathroom} />
+        <Buttons bathroom={bathroom} />
+        <ToiletPaper bathroom={bathroom} />
+        <Toilet bathroom={bathroom} />
+    </div>
+
+export default observer(Bathroom)
+
+const ToiletPaper = observer(({ bathroom }) =>
+    <Stack amount={bathroom.amountOfToiletPaper}>
         {i =>
             <Pos top={300 + i * 100} left={300} key={i}>
                 <Emoji.paper size={10} />
             </Pos>}
     </Stack>
+)
 
-const Poop = ({ amount }) =>
+const Poop = ({ amount, flushing }) =>
     <Stack amount={amount}>
         {i =>
             <Pos top={542 - i * 150} left={780} key={i}>
-                <Emoji.poop size={20} />
+                <Emoji.poop size={20} className={flushing ? "spinning" : ""} />
             </Pos>}
     </Stack>
 
