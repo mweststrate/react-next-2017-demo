@@ -1,5 +1,5 @@
 import { autorun } from "mobx"
-import { types, process, addMiddleware } from "mobx-state-tree"
+import { types, process, addMiddleware, destroy } from "mobx-state-tree"
 
 import { delay, atomicActions, undoRedoMiddleware } from "../utils"
 
@@ -17,20 +17,20 @@ const Duck = types.model({
 const Toilet = types
     .model({
         isFlushing: false,
-        contents: types.array(types.union(Sh_t, Duck))
+        pile: types.array(types.union(Sh_t, Duck))
     })
     .actions(self => {
         function donate() {
-            if (self.contents.length >= 2) throw new Error("ToiletOverflowException")
-            if (Duck.is(self.contents[0])) self.contents.clear()
-            self.contents.push(Sh_t.create({ type: "sh_t" }))
+            if (self.pile.length >= 2) throw new Error("ToiletOverflowException")
+            if (Duck.is(self.pile[0])) destroy(self.pile[0])
+            self.pile.push({ type: "sh_t" })
         }
 
         const flush = process(function* flush() {
             if (self.isFlushing) return
             self.isFlushing = true
             yield delay(2000)
-            self.contents = [Duck.create({ type: "duck" })]
+            self.pile = [{ type: "duck" }]
             self.isFlushing = false
         })
 

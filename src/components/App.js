@@ -70,7 +70,7 @@ const FlushingIcon = ({ visible }) =>
 
 const Toilet = observer(({ toilet }) =>
     <div>
-        {toilet.contents.map((item, i) =>
+        {toilet.pile.map((item, i) =>
             <Pos top={542 - i * 150} left={780} key={i}>
                 {item.type === "duck"
                     ? <Duck flushing={toilet.isFlushing} />

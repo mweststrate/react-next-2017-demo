@@ -9,7 +9,7 @@ import { Bathroom as BathroomModel } from "./models/Bathroom"
 import { synchronizeActions } from "./utils"
 
 const emptyBathroom = {
-    toilet: { contents: [] },
+    toilet: { pile: [] },
     painting: {}
 }
 
