@@ -24,13 +24,4 @@ onSnapshot(bathroom, snapshot => {
     window.localStorage.setItem("bathroom", JSON.stringify(snapshot))
 })
 
-onPatch(bathroom, p => {
-    console.dir(p)
-})
-
 ReactDOM.render(<Bathroom bathroom={bathroom} />, document.getElementById("root"))
-
-// const bathroom2 = BathroomModel.create({})
-// ReactDOM.render(<Bathroom bathroom={bathroom2} />, document.getElementById("root2"))
-
-// synchronizeActions([bathroom, bathroom2], ["restock", "flush"])
