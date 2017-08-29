@@ -1,16 +1,23 @@
 import { autorun } from "mobx"
 import { types, process, addMiddleware, destroy, decorate } from "mobx-state-tree"
 
-import { delay, atomic, atomicAsync, undoRedoMiddleware, atomicAsync2 } from "../utils"
+import {
+    delay,
+    atomic,
+    atomicAsync,
+    undoRedoMiddleware,
+    atomicAsyncAction,
+    atomicAsyncPatch
+} from "../utils"
 
 const Sh_t = types.model({
-    type: types.literal("sh_t"),
+    type: types.literal("💩"),
     weight: 500,
     smell: 7
 })
 
 const Duck = types.model({
-    type: types.literal("duck"),
+    type: types.literal("🦆"),
     name: "Donald"
 })
 
@@ -23,14 +30,14 @@ const Toilet = types
         function donate() {
             if (self.pile.length >= 2) throw new Error("ToiletOverflowException")
             if (Duck.is(self.pile[0])) destroy(self.pile[0])
-            self.pile.push({ type: "sh_t" })
+            self.pile.push({ type: "💩" })
         }
 
         const flush = process(function* flush() {
             if (self.isFlushing) return
             self.isFlushing = true
             yield delay(2000)
-            self.pile = [{ type: "duck" }]
+            self.pile = [{ type: "🦆" }]
             self.isFlushing = false
         })
 
@@ -60,8 +67,7 @@ export const Bathroom = types
         painting: Painting
     })
     .actions(self => {
-        // // addMiddleware(self, atomicActions)
-        // const undoManager = undoRedoMiddleware(self, ["move"])
+        // addMiddleware(self, atomicAsyncAction)
 
         function wipe() {
             if (self.amountOfToiletPaper <= 0) throw new Error("OutOfToiletPaperException")
@@ -77,15 +83,15 @@ export const Bathroom = types
             self.wipe()
             self.wipe()
             yield self.toilet.flush()
-            self.wipe()
-            self.wipe()
+            // self.wipe()
+            // self.wipe()
         })
 
         return {
             wipe,
             restock,
-            // takeA____
-            takeA____: decorate(atomicAsync2, takeA____)
+            takeA____
+            // takeA____: decorate(atomicAsyncAction, takeA____)
             // undo: undoManager.undo,
             // redo: undoManager.redo
         }

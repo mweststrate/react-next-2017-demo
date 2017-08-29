@@ -1,6 +1,6 @@
 import React from "react"
 import ReactDOM from "react-dom"
-import { onSnapshot } from "mobx-state-tree"
+import { onSnapshot, onPatch } from "mobx-state-tree"
 import { Provider } from "mobx-react"
 
 import "./index.css"
@@ -22,6 +22,10 @@ const bathroom = BathroomModel.create(initialState)
 
 onSnapshot(bathroom, snapshot => {
     window.localStorage.setItem("bathroom", JSON.stringify(snapshot))
+})
+
+onPatch(bathroom, p => {
+    console.dir(p)
 })
 
 ReactDOM.render(<Bathroom bathroom={bathroom} />, document.getElementById("root"))
