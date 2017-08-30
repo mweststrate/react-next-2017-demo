@@ -1,12 +1,11 @@
 import React from "react"
 import ReactDOM from "react-dom"
-import { onSnapshot, onPatch } from "mobx-state-tree"
-import { Provider } from "mobx-react"
+import { onSnapshot } from "mobx-state-tree"
 
 import "./index.css"
-import Bathroom from "./components/App"
+
+import Bathroom from "./components/Bathroom"
 import { Bathroom as BathroomModel } from "./models/Bathroom"
-import { synchronizeActions } from "./utils"
 
 const emptyBathroom = {
     toilet: { pile: [] },
@@ -25,3 +24,5 @@ onSnapshot(bathroom, snapshot => {
 })
 
 ReactDOM.render(<Bathroom bathroom={bathroom} />, document.getElementById("root"))
+
+window.bathroom = bathroom // for console access

@@ -1,4 +1,4 @@
-import { autorun } from "mobx"
+/* eslint-disable */
 import { types, process, addMiddleware, destroy, decorate } from "mobx-state-tree"
 
 import {
@@ -9,6 +9,7 @@ import {
     atomicAsyncAction,
     atomicAsyncPatch
 } from "../utils"
+/* eslint-enable */
 
 const Sh_t = types.model({
     type: types.literal("💩"),
@@ -56,7 +57,7 @@ const Painting = types
     })
     .actions(self => ({
         move(x, y) {
-            this.anchor = { x, y }
+            self.anchor = { x, y }
         }
     }))
 

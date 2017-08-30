@@ -1,11 +1,5 @@
-import {
-    getSnapshot,
-    applySnapshot,
-    onAction,
-    applyAction,
-    addMiddleware,
-    recordPatches
-} from "mobx-state-tree"
+/* eslint-disable */
+import { getSnapshot, applySnapshot, recordPatches } from "mobx-state-tree"
 
 // naive atomic implementation for sync actions
 export function atomic(call, next) {
