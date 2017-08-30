@@ -22,7 +22,7 @@ export const Toilet = observer(({ toilet }) => (
     </div>
 ))
 
-// eslint-disable-next-line
+/* eslint-disable */
 const Sh_t = ({ flushing }) => <Emoji.poop size={20} className={flushing ? "spinning" : ""} />
 
 const Duck = ({ flushing }) => <Emoji.duck size={18} className={flushing ? "spinning" : "wobble"} />

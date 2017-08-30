@@ -1,6 +1,5 @@
 import React from "react"
 import { observer } from "mobx-react"
-import Draggable from "react-draggable"
 
 import "./Bathroom.css"
 

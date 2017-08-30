@@ -4,12 +4,12 @@ import { getSnapshot, applySnapshot, recordPatches } from "mobx-state-tree"
 // naive atomic implementation for sync actions
 export function atomic(call, next) {
     // record a preState
-    const preState = getSnapshot(call.context)
+    const preState = getSnapshot(call.tree)
     try {
         return next(call)
     } catch (e) {
         // exception: restore snapshot..
-        applySnapshot(call.context, preState)
+        applySnapshot(call.tree, preState)
         // ..and rethrow
         throw e
     }
@@ -23,10 +23,10 @@ export function atomicAsync(call, next) {
         case "action":
             return atomic(call, next)
         case "process_spawn":
-            runningActions.set(call.id, getSnapshot(call.context))
+            runningActions.set(call.id, getSnapshot(call.tree))
             break
         case "process_throw":
-            applySnapshot(call.context, runningActions.get(call.id))
+            applySnapshot(call.tree, runningActions.get(call.id))
             runningActions.delete(call.id)
             break
         case "process_return":
@@ -41,17 +41,13 @@ export function atomicAsyncPatch(call, next) {
         case "action":
             return atomic(call, next)
         case "process_spawn": {
-            const recorder = recordPatches(call.context)
-            runningActions.set(call.rootId, recorder)
-            try {
-                return next(call)
-            } finally {
-                recorder.stop()
-            }
+            const recorder = recordPatches(call.tree)
+            runningActions.set(call.id, recorder)
+            break
         }
-        case "process_yield":
-        case "process_yield_error": {
-            const recorder = runningActions.get(call.rootId)
+        case "process_resume":
+        case "process_resume_error": {
+            const recorder = runningActions.get(call.id)
             try {
                 recorder.resume()
                 return next(call)
@@ -60,11 +56,11 @@ export function atomicAsyncPatch(call, next) {
             }
         }
         case "process_throw":
-            runningActions.get(call.rootId).undo()
-            runningActions.delete(call.rootId)
+            runningActions.get(call.id).undo()
+            runningActions.delete(call.id)
             break
         case "process_return":
-            runningActions.delete(call.rootId)
+            runningActions.delete(call.id)
             break
     }
     return next(call)
@@ -73,7 +69,7 @@ export function atomicAsyncPatch(call, next) {
 const history = [] // { id, snapshot, call }[]
 
 export function atomicAsyncAction(call, next) {
-    const snapshot = getSnapshot(call.context)
+    const snapshot = getSnapshot(call.tree)
     if (call.id === call.rootId) {
         history.push({
             id: call.id,
@@ -87,13 +83,17 @@ export function atomicAsyncAction(call, next) {
             try {
                 return next(call)
             } catch (e) {
-                applySnapshot(call.context, snapshot)
-                if (call.id === call.rootId) history.pop()
+                // handle exception in a synchronous action
+                if (call.id === call.rootId) {
+                    history.pop()
+                    applySnapshot(call.tree, snapshot)
+                }
                 throw e
             }
         case "process_throw":
+            // handle exception in asynchronous process be rewinding and replaying actions
             const idx = history.findIndex(item => item.id === call.rootId)
-            applySnapshot(history[idx].call.context, history[idx].snapshot)
+            applySnapshot(history[idx].call.tree, history[idx].snapshot)
             const toReplay = history.splice(idx).slice(1)
             toReplay.forEach(item => {
                 item.call.context[item.call.name].apply(null, item.call.args)

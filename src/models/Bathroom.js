@@ -8,7 +8,7 @@ import {
     undoRedoMiddleware,
     atomicAsyncAction,
     atomicAsyncPatch
-} from "../utils"
+} from "../middleware"
 /* eslint-enable */
 
 const Sh_t = types.model({
@@ -22,6 +22,7 @@ const Duck = types.model({
     name: "Donald"
 })
 
+// TODO: count visits
 const Toilet = types
     .model({
         isFlushing: false,
@@ -99,6 +100,6 @@ export const Bathroom = types
             wipe,
             restock,
             takeA____
-            // takeA____: decorate(atomicAsync, takeA____)
+            // takeA____: decorate(atomicAsyncPatch, takeA____)
         }
     })
