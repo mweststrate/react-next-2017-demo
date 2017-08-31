@@ -8,6 +8,18 @@ export const Buttons = ({ bathroom }) => (
         <button onClick={bathroom.wipe}>Wipe</button>
         <button onClick={bathroom.toilet.flush}>Flush</button>
         <button onClick={bathroom.restock}>Restock</button>
-        <button onClick={bathroom.takeA____}>Full visit</button>
+        <button
+            onClick={() => {
+                // MWE: this is an ugly because Firefox does not yet
+                // support unhandled promise rejections, causing the nice react-error-overlay not to show up
+                bathroom.takeA____().catch(e => {
+                    setImmediate(() => {
+                        throw e
+                    })
+                })
+            }}
+        >
+            Full visit
+        </button>
     </Pos>
 )

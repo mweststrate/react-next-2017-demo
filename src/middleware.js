@@ -95,7 +95,8 @@ export function atomicAsyncAction(call, next) {
             const idx = history.findIndex(item => item.id === call.rootId)
             applySnapshot(history[idx].call.tree, history[idx].snapshot)
             const toReplay = history.splice(idx).slice(1)
-            toReplay.forEach(item => {
+            toReplay.forEach(async (item, i) => {
+                await delay(2000 * (i + 1))
                 item.call.context[item.call.name].apply(null, item.call.args)
             })
             break

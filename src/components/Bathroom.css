@@ -5,3 +5,23 @@
   position: relative;
   overflow: hidden;
 }
+
+.processed1 {
+  font-family: Arial;
+  font-size: 60px;
+  font-weight: bold;
+  color: gray;
+}
+
+.processed2 {
+  color: red;
+  font-family: Arial;
+  font-size: 100px;
+  font-weight: bold;
+}
+
+.processed3 {
+  font-family: Arial;
+  font-size: 80px;
+  font-weight: bold;
+}

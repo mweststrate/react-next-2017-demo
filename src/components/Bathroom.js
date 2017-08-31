@@ -18,6 +18,7 @@ export const Bathroom = ({ bathroom }) => (
         <Buttons bathroom={bathroom} />
         <ToiletPaper bathroom={bathroom} />
         <Toilet toilet={bathroom.toilet} />
+        <Report toilet={bathroom.toilet} />
     </div>
 )
 
@@ -33,5 +34,15 @@ const BathroomIcon = () => (
         <Emoji.bathroom size={10} />
     </Pos>
 )
+
+const Report = observer(({ toilet }) => (
+    <Pos top={600} left={1300}>
+        <span className="processed1">
+            Processed<br />
+        </span>
+        <span className="processed2">{toilet.processed}</span>
+        <span className="processed3">{" gr."}</span>
+    </Pos>
+))
 
 export default observer(Bathroom)
