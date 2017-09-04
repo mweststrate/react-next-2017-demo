@@ -12,6 +12,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+  overflow: hidden;
 }
 
 button {
@@ -37,4 +38,10 @@ animation: rotating 0.5s linear infinite;
 .wobble
 {
 animation: wobble 3s linear 0s infinite alternate;
+}
+
+/* for demo, upscale error dialog */
+iframe {
+  transform: scale(1.5);
+  transform-origin: top;
 }

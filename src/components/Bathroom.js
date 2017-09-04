@@ -11,7 +11,7 @@ import { ToiletPaper } from "./ToiletPaper"
 import { Toilet } from "./Toilet"
 
 export const Bathroom = ({ bathroom }) => (
-    <div className="Bathroom">
+    <section className="Bathroom">
         <BathroomIcon />
         <FlushingIcon visible={bathroom.toilet.isFlushing} />
         <Painting painting={bathroom.painting} />
@@ -19,7 +19,7 @@ export const Bathroom = ({ bathroom }) => (
         <ToiletPaper bathroom={bathroom} />
         <Toilet toilet={bathroom.toilet} />
         <Report toilet={bathroom.toilet} />
-    </div>
+    </section>
 )
 
 const FlushingIcon = ({ visible }) =>
@@ -38,7 +38,7 @@ const BathroomIcon = () => (
 const Report = observer(({ toilet }) => (
     <Pos top={600} left={1300}>
         <span className="processed1">
-            Processed<br />
+            Flushed<br />
         </span>
         <span className="processed2">{toilet.processed}</span>
         <span className="processed3">{" gr."}</span>

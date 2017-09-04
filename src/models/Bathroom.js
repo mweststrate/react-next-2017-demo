@@ -22,7 +22,6 @@ const Duck = types.model({
     name: "Donald"
 })
 
-// TODO: count visits
 const Toilet = types
     .model({
         isFlushing: false,
@@ -35,9 +34,9 @@ const Toilet = types
         }
 
         function donate() {
-            if (self.pile.length >= 2) throw new Error("ToiletOverflowException")
             if (Duck.is(self.pile[0])) destroy(self.pile[0])
             self.pile.push({ type: "💩" })
+            if (self.pile.length > 2) throw new Error("ToiletOverflowException")
         }
 
         const flush = process(function* flush() {
@@ -75,7 +74,7 @@ export const Bathroom = types
         painting: Painting
     })
     .actions(self => {
-        addMiddleware(self, atomicAsyncAction)
+        // addMiddleware(self, atomicAsyncAction)
 
         function wipe() {
             if (self.amountOfToiletPaper <= 0) throw new Error("OutOfToiletPaperException")
@@ -86,21 +85,21 @@ export const Bathroom = types
             self.amountOfToiletPaper += 3
         }
 
-        // function takeA____() {
-        //     self.toilet.donate()
-        //     self.wipe()
-        //     self.wipe()
-        //     self.toilet.flush()
-        // }
-
-        const takeA____ = process(function*() {
+        function takeA____() {
             self.toilet.donate()
             self.wipe()
             self.wipe()
-            yield self.toilet.flush()
-            self.wipe()
-            self.wipe()
-        })
+            self.toilet.flush()
+        }
+
+        // const takeA____ = process(function*() {
+        //     self.toilet.donate()
+        //     self.wipe()
+        //     self.wipe()
+        //     yield self.toilet.flush()
+        //     self.wipe()
+        //     self.wipe()
+        // })
 
         return {
             wipe,
