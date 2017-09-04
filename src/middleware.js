@@ -1,6 +1,8 @@
 /* eslint-disable */
 import { getSnapshot, applySnapshot, recordPatches } from "mobx-state-tree"
 
+import { delay } from "./utils"
+
 // naive atomic implementation for sync actions
 export function atomic(call, next) {
     // record a preState
@@ -102,10 +104,4 @@ export function atomicAsyncAction(call, next) {
             break
     }
     return next(call)
-}
-
-export function delay(time) {
-    return new Promise(resolve => {
-        setTimeout(resolve, time)
-    })
 }
