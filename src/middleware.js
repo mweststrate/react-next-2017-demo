@@ -50,8 +50,8 @@ export function atomicAsyncPatch(call, next) {
         case "process_resume":
         case "process_resume_error": {
             const recorder = runningActions.get(call.id)
+            recorder.resume()
             try {
-                recorder.resume()
                 return next(call)
             } finally {
                 recorder.stop()

@@ -1,5 +1,6 @@
 import React from "react"
 import { observer } from "mobx-react"
+import { applyPatch } from "mobx-state-tree"
 
 import "./Bathroom.css"
 
@@ -12,7 +13,7 @@ import { Toilet } from "./Toilet"
 
 export const Bathroom = ({ bathroom }) => (
     <section className="Bathroom">
-        <BathroomIcon />
+        <BathroomIcon bathroom={bathroom} />
         <FlushingIcon visible={bathroom.toilet.isFlushing} />
         <ToiletPaper bathroom={bathroom} />
         {bathroom.isRelaxing && <RelaxIcon />}
@@ -30,9 +31,21 @@ const FlushingIcon = ({ visible }) =>
         </Pos>
     ) : null
 
-const BathroomIcon = () => (
+const BathroomIcon = ({ bathroom }) => (
     <Pos top={20} left={30}>
-        <Emoji.bathroom size={10} />
+        <div
+            onClick={() => {
+                // reset for demo purposes
+                applyPatch(bathroom, { op: "replace", path: "amountOfToiletPaper", value: 1 })
+                applyPatch(bathroom.toilet, {
+                    op: "replace",
+                    path: "pile",
+                    value: [{ type: "🦆" }]
+                })
+            }}
+        >
+            <Emoji.bathroom size={10} />
+        </div>
     </Pos>
 )
 
