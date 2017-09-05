@@ -24,7 +24,8 @@ export const Emoji = {
     bathroom: createEmojiComponent("🚻"),
     nuclear: createEmojiComponent("☢"),
     rainbow: createEmojiComponent("🌈"),
-    goal: createEmojiComponent("🎯")
+    goal: createEmojiComponent("🎯"),
+    game: createEmojiComponent("🎮")
 }
 function createEmojiComponent(emoji) {
     return props => <EmojiSpan emoji={emoji} {...props} />

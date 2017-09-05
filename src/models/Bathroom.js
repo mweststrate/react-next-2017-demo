@@ -1,8 +1,9 @@
 /* eslint-disable */
 import { types, process, addMiddleware, destroy, decorate } from "mobx-state-tree"
 
+import { delay } from "../utils"
+
 import {
-    delay,
     atomic,
     atomicAsync,
     undoRedoMiddleware,
@@ -17,6 +18,7 @@ import { Painting } from "./Painting"
 export const Bathroom = types
     .model("Bathroom", {
         amountOfToiletPaper: 0,
+        isRelaxing: false,
         toilet: Toilet,
         painting: Painting
     })
@@ -32,26 +34,31 @@ export const Bathroom = types
             self.amountOfToiletPaper += 3
         }
 
-        function takeA____() {
+        function fullVisit() {
             self.toilet.donate()
             self.wipe()
             self.wipe()
             self.toilet.flush()
         }
 
-        // const takeA____ = process(function*() {
-        //     self.toilet.donate()
-        //     self.wipe()
-        //     self.wipe()
-        //     yield self.toilet.flush()
-        //     self.wipe()
-        //     self.wipe()
-        // })
+        //  const fullVisit = process(function* fullVisit() {
+        //      yield delay(1000)
+        //      self.toilet.donate()
+        //      yield delay(1000)
+        //      self.isRelaxing = true
+        //      yield delay(1000)
+        //      self.isRelaxing = false
+        //      yield delay(1000)
+        //      self.wipe()
+        //      yield delay(1000)
+        //      self.wipe()
+        //      yield self.toilet.flush()
+        //  })
 
         return {
             wipe,
             restock,
-            takeA____
-            // takeA____: decorate(atomicAsyncPatch, takeA____)
+            fullVisit
+            // fullVisit: decorate(atomic, fullVisit)
         }
     })

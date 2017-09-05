@@ -10,7 +10,7 @@ export const Painting = observer(({ painting }) => (
         onStop={(_, { x, y }) => painting.move(x, y)}
     >
         <div>
-            <EmojiSpan size={30} emoji={painting.painting} />
+            <EmojiSpan size={20} emoji={painting.painting} />
         </div>
     </Draggable>
 ))

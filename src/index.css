@@ -17,17 +17,17 @@ body {
 
 button {
   font-size: 2em;
-  border-radius: 10px;
-  border: 4px white;
-  background: black;
+  border: none;
+  background: white;
   padding: 20px;
-  color: white;
+  color: rgb(138, 138, 138);
   margin-right: 10px;
   cursor: pointer;
 }
 
 button:hover {
-    border-color: cyan;
+  text-decoration: underline;
+  border-color: cyan;
 }
 
 .spinning
