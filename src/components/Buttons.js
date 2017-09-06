@@ -9,11 +9,14 @@ export const Buttons = ({ bathroom }) => (
             onClick={() => {
                 // MWE: this is an ugly because Firefox does not yet
                 // support unhandled promise rejections, causing the nice react-error-overlay not to show up
-                bathroom.fullVisit().catch(e => {
-                    setImmediate(() => {
-                        throw e
+                const promise = bathroom.fullVisit()
+                // initial demo impl doesn't return promise...
+                if (promise)
+                    promise.catch(e => {
+                        setImmediate(() => {
+                            throw e
+                        })
                     })
-                })
             }}
         >
             Full visit
