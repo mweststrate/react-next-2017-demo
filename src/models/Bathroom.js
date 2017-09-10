@@ -23,8 +23,6 @@ export const Bathroom = types
         painting: Painting
     })
     .actions(self => {
-        // addMiddleware(self, atomicAsyncAction)
-
         function wipe() {
             if (self.amountOfToiletPaper <= 0) throw new Error("OutOfToiletPaperException")
             self.amountOfToiletPaper -= 1
@@ -34,31 +32,33 @@ export const Bathroom = types
             self.amountOfToiletPaper += 3
         }
 
-        function fullVisit() {
-            self.toilet.donate()
-            self.wipe()
-            self.wipe()
-            self.toilet.flush()
-        }
+        // function fullVisit() {
+        //     self.toilet.donate()
+        //     self.wipe()
+        //     self.wipe()
+        //     self.toilet.flush()
+        // }
 
-        //  const fullVisit = process(function* fullVisit() {
-        //      yield delay(1000)
-        //      self.toilet.donate()
-        //      yield delay(1000)
-        //      self.isRelaxing = true
-        //      yield delay(1000)
-        //      self.isRelaxing = false
-        //      yield delay(1000)
-        //      self.wipe()
-        //      yield delay(1000)
-        //      self.wipe()
-        //      yield self.toilet.flush()
-        //  })
+        const fullVisit = process(function* fullVisit() {
+            yield delay(1000)
+            self.toilet.donate()
+            yield delay(1000)
+            self.isRelaxing = true
+            yield delay(1000)
+            self.isRelaxing = false
+            yield delay(1000)
+            self.wipe()
+            yield delay(1000)
+            self.wipe()
+            yield self.toilet.flush()
+        })
+
+        // addMiddleware(self, atomicAsyncAction)
 
         return {
             wipe,
             restock,
-            fullVisit
-            // fullVisit: decorate(atomic, fullVisit)
+            // fullVisit
+            fullVisit: decorate(atomicAsyncPatch, fullVisit)
         }
     })
