@@ -8,8 +8,8 @@ import Bathroom from "./components/Bathroom"
 import { Bathroom as BathroomModel } from "./models/Bathroom"
 
 const emptyBathroom = {
-    toilet: { pile: [] },
-    painting: {}
+    amountOfToiletPaper: 3,
+    toilet: { pile: [{ type: "🦆", name: "Donald" }] }
 }
 
 const initialState =
