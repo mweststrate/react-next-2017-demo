@@ -43,5 +43,5 @@ animation: wobble 3s linear 0s infinite alternate;
 /* for demo, upscale error dialog */
 iframe {
   transform: scale(1.5);
-  transform-origin: top;
+  transform-origin: top left;
 }
