@@ -9,6 +9,7 @@ import { Bathroom as BathroomModel } from "./models/Bathroom"
 
 const emptyBathroom = {
     amountOfToiletPaper: 3,
+    painting: {},
     toilet: { pile: [{ type: "🦆", name: "Donald" }] }
 }
 
